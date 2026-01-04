@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $studentUser->id,
                 'first_name' => 'Student',
                 'last_name' => 'User',
+                'registration_number' => 'STU-' . date('Y') . '-001',
                 'intake_year' => date('Y'),
                 'status' => 'active',
             ]);
