@@ -17,19 +17,26 @@ class ListEnrollments extends ListRecords
             'all' => Tab::make('All'),
 
             'active' => Tab::make('Active')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'active')),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'active')),
 
             'completed' => Tab::make('Completed')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'completed')),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'completed')),
 
             'dropped' => Tab::make('Dropped')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dropped')),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'dropped')),
 
             'this_month' => Tab::make('This Month')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])),
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])),
 
             'this_year' => Tab::make('This Year')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])),
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])),
+        ];
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\CreateAction::make(),
         ];
     }
 }

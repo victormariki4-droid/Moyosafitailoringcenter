@@ -10,6 +10,11 @@ class Student extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'status_date' => 'date',
+    ];
+
     protected static function booted(): void
     {
         static::creating(function (Student $student) {
@@ -36,13 +41,13 @@ class Student extends Model
         return $this->belongsToMany(Course::class, 'enrollments');
     }
     public function user()
-{
-    return $this->belongsTo(\App\Models\User::class);
-}
-public function progressReports()
-{
-    return $this->hasMany(\App\Models\ProgressReport::class);
-}
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+    public function progressReports()
+    {
+        return $this->hasMany(\App\Models\ProgressReport::class);
+    }
 
 
 

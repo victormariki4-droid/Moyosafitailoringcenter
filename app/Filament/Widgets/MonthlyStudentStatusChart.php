@@ -21,39 +21,42 @@ class MonthlyStudentStatusChart extends ChartWidget
     {
         // ✅ Adjust these if your enrollment status values differ
         $graduatedStatus = 'graduated';
-        $droppedStatus   = 'dropped';
+        $droppedStatus = 'dropped';
 
         $year = (int) ($this->filter ?? now()->year);
 
         $labels = collect(range(1, 12))
-            ->map(fn ($m) => Carbon::create($year, $m, 1)->format('M'))
+            ->map(fn($m) => Carbon::create($year, $m, 1)->format('M'))
             ->values()
             ->all();
 
         // Enrollments per month (created_at)
+        $monthExpression = $this->getMonthExpression('created_at');
         $enrollments = DB::table('enrollments')
-            ->selectRaw('MONTH(created_at) as m, COUNT(*) as total')
+            ->selectRaw("$monthExpression as m, COUNT(*) as total")
             ->whereYear('created_at', $year)
             ->groupBy('m')
             ->pluck('total', 'm');
 
         // Graduates per month (updated_at used as status change time)
+        $monthExpression = $this->getMonthExpression('updated_at');
         $graduates = DB::table('enrollments')
-            ->selectRaw('MONTH(updated_at) as m, COUNT(*) as total')
+            ->selectRaw("$monthExpression as m, COUNT(*) as total")
             ->whereYear('updated_at', $year)
             ->where('status', $graduatedStatus)
             ->groupBy('m')
             ->pluck('total', 'm');
 
         // Dropouts per month (updated_at used as status change time)
+        $monthExpression = $this->getMonthExpression('updated_at');
         $dropouts = DB::table('enrollments')
-            ->selectRaw('MONTH(updated_at) as m, COUNT(*) as total')
+            ->selectRaw("$monthExpression as m, COUNT(*) as total")
             ->whereYear('updated_at', $year)
             ->where('status', $droppedStatus)
             ->groupBy('m')
             ->pluck('total', 'm');
 
-        $toSeries = fn ($map) => collect(range(1, 12))->map(fn ($m) => (int) ($map[$m] ?? 0))->all();
+        $toSeries = fn($map) => collect(range(1, 12))->map(fn($m) => (int) ($map[$m] ?? 0))->all();
 
         return [
             'labels' => $labels,
@@ -82,7 +85,17 @@ class MonthlyStudentStatusChart extends ChartWidget
         $currentYear = now()->year;
 
         return collect(range($currentYear - 3, $currentYear))
-            ->mapWithKeys(fn ($y) => [$y => (string) $y])
+            ->mapWithKeys(fn($y) => [$y => (string) $y])
             ->all();
+    }
+    private function getMonthExpression(string $column): string
+    {
+        $driver = DB::connection()->getDriverName();
+
+        return match ($driver) {
+            'sqlite' => "CAST(strftime('%m', $column) AS INTEGER)",
+            'pgsql' => "EXTRACT(MONTH FROM $column)",
+            default => "MONTH($column)", // MySQL, MariaDB
+        };
     }
 }

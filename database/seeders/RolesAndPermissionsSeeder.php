@@ -14,6 +14,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissions = [
             // Students
             'students.view',
+            'students.create', // ✅ Added missing permission
             'students.update_school_info', // limited fields only
 
             // Enrollments
