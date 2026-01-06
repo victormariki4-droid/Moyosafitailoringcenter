@@ -42,16 +42,5 @@ class UserSeeder extends Seeder
             ]
         );
         $student->assignRole('student');
-
-        // 4. Read Only Admin
-        $readonly = User::firstOrCreate(
-            ['email' => 'readonly@school.com'],
-            [
-                'name' => 'Read Only Admin',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-        $readonly->assignRole('read_only_admin');
     }
 }

@@ -20,6 +20,9 @@ class OverviewStats extends BaseWidget
 
     protected function getStats(): array
     {
+        $graduatedStatus = 'graduated';
+        $droppedStatus   = 'dropped';
+
         return [
             Stat::make('Students', Student::query()->count())
                 ->icon('heroicon-o-academic-cap'),
@@ -30,19 +33,16 @@ class OverviewStats extends BaseWidget
             Stat::make('Courses', Course::query()->count())
                 ->icon('heroicon-o-book-open'),
 
-            Stat::make('Active Students', Enrollment::query()->where('status', 'active')->count())
-                ->icon('heroicon-o-academic-cap')
-                ->color('success'),
+            Stat::make('Enrollments', Enrollment::query()->count())
+                ->icon('heroicon-o-clipboard-document-check'),
 
-            Stat::make('Completed', Enrollment::query()->where('status', 'completed')->count())
-                ->icon('heroicon-o-check-badge')
-                ->description('Graduated/Finished')
-                ->color('info'),
+            Stat::make('Graduates', Enrollment::query()->where('status', $graduatedStatus)->count())
+                ->icon('heroicon-o-trophy')
+                ->description('Completed'),
 
-            Stat::make('Dropout', Enrollment::query()->where('status', 'dropped')->count())
+            Stat::make('Dropouts', Enrollment::query()->where('status', $droppedStatus)->count())
                 ->icon('heroicon-o-x-circle')
-                ->description('Left school')
-                ->color('danger'),
+                ->description('Left school'),
         ];
     }
 }

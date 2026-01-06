@@ -39,12 +39,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'progress_reports.create',
             'progress_reports.update',
             'progress_reports.delete',
-
-            // Courses
-            'courses.view',
-            'courses.create',
-            'courses.update',
-            'courses.delete',
         ];
 
         foreach ($permissions as $p) {
@@ -54,7 +48,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $teacher = Role::firstOrCreate(['name' => 'teacher']);
         $student = Role::firstOrCreate(['name' => 'student']);
-
 
         // Admin gets everything
         $admin->syncPermissions(Permission::all());
@@ -74,18 +67,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'progress_reports.view',
             'progress_reports.create',
             'progress_reports.update',
-            'courses.view', // Teacher can view courses
-        ]);
-
-        // Read Only Admin: view only
-        $readOnlyAdmin = Role::firstOrCreate(['name' => 'read_only_admin']);
-        $readOnlyAdmin->syncPermissions([
-            'students.view',
-            'enrollments.view',
-            'results.view',
-            'reports.view',
-            'progress_reports.view',
-            'courses.view',
         ]);
 
         // Student: typically none for Filament

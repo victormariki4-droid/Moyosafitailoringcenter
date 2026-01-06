@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class MonthlyStudentStatusChart extends ChartWidget
 {
-    protected static ?string $heading = 'Annual Student Overview';
+    protected static ?string $heading = 'Monthly Summary (Enrollments / Graduates / Dropouts)';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -20,7 +20,7 @@ class MonthlyStudentStatusChart extends ChartWidget
     protected function getData(): array
     {
         // ✅ Adjust these if your enrollment status values differ
-        $completedStatus = 'completed';
+        $graduatedStatus = 'graduated';
         $droppedStatus = 'dropped';
 
         $year = (int) ($this->filter ?? now()->year);
@@ -43,7 +43,7 @@ class MonthlyStudentStatusChart extends ChartWidget
         $graduates = DB::table('enrollments')
             ->selectRaw("$monthExpression as m, COUNT(*) as total")
             ->whereYear('updated_at', $year)
-            ->where('status', $completedStatus)
+            ->where('status', $graduatedStatus)
             ->groupBy('m')
             ->pluck('total', 'm');
 
@@ -67,7 +67,7 @@ class MonthlyStudentStatusChart extends ChartWidget
                     'backgroundColor' => '#3B82F6',
                 ],
                 [
-                    'label' => 'Completed',
+                    'label' => 'Graduates',
                     'data' => $toSeries($graduates),
                     'backgroundColor' => '#22C55E',
                 ],
