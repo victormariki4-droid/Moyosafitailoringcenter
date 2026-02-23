@@ -40,9 +40,30 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user-circle'),
             ])
 
-            // ✅ Theme color
+            // ✅ Theme colors
             ->colors([
-                'primary' => '#214698',
+                'primary' => Color::Indigo,
+                'gray' => Color::Slate,
+                'info' => Color::Blue,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
+                'danger' => Color::Rose,
+            ])
+            ->font('Inter')
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Student Management')
+                    ->icon('heroicon-o-users'),
+                    
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Academics')
+                    ->icon('heroicon-o-book-open'),
+                    
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
             ])
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

@@ -14,7 +14,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload; // ✅ Added
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Get;
 
 // Tables
 use Filament\Tables;
@@ -25,8 +26,9 @@ class StudentResource extends Resource
     protected static ?string $model = Student::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
     protected static ?string $navigationLabel = 'Students';
+    protected static ?string $navigationGroup = 'Student Management';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -127,7 +129,6 @@ class StudentResource extends Resource
                 ])
                 ->columns(2),
 
-            // ✅ Only editable section for teachers
             Section::make('School Information')
                 ->visibleOn('edit')
                 ->schema([
@@ -135,7 +136,7 @@ class StudentResource extends Resource
                         ->label('Intake Year')
                         ->numeric()
                         ->minValue(2000)
-                        ->maxValue((int) date('Y') + 1),
+                         ->maxValue((int) date('Y') + 1),
 
                     Select::make('status')
                         ->label('Student Status')
@@ -143,6 +144,8 @@ class StudentResource extends Resource
                             'active' => 'Active',
                             'dropped' => 'Dropped',
                             'graduated' => 'Graduated',
+                            'employed' => 'Employed (Alumni)',
+                            'self-employed' => 'Self-Employed (Alumni)',
                         ])
                         ->required()
                         ->default('active'),
@@ -152,6 +155,61 @@ class StudentResource extends Resource
 
                     Textarea::make('status_reason')
                         ->label('Reason / Notes')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+
+            Section::make('Alumni & Career Tracking')
+                ->description('Track student post-graduation career status.')
+                ->schema([
+                    Select::make('is_employed')
+                        ->label('Is Currently Employed?')
+                        ->options([
+                            1 => 'Yes',
+                            0 => 'No',
+                        ])
+                        ->default(0)
+                        ->live(),
+
+                    Select::make('employment_type')
+                        ->label('Employment Type')
+                        ->options([
+                            'employed' => 'Employed (Salaried)',
+                            'self-employed' => 'Self-Employed (Business)',
+                            'internship' => 'Internship / Apprenticeship',
+                            'contract' => 'Contract / Freelance',
+                        ])
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    TextInput::make('employer_name')
+                        ->label('Employer / Business Name')
+                        ->placeholder('e.g. ABC Tailoring Shop or My Tailoring Business')
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    TextInput::make('employer_location')
+                        ->label('Employer Location / Address')
+                        ->placeholder('e.g. Arusha Town, Block 5')
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    TextInput::make('job_title')
+                        ->label('Job Title / Position')
+                        ->placeholder('e.g. Senior Tailor, Shop Manager')
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    TextInput::make('monthly_salary')
+                        ->label('Monthly Income / Salary')
+                        ->numeric()
+                        ->prefix('Tsh')
+                        ->placeholder('e.g. 300000')
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    DatePicker::make('employment_start_date')
+                        ->label('Employment Start Date')
+                        ->visible(fn (Get $get) => $get('is_employed')),
+
+                    Textarea::make('career_notes')
+                        ->label('Career Updates / General Notes')
+                        ->placeholder('Add any other updates about where the student is now...')
                         ->columnSpanFull(),
                 ])
                 ->columns(2),

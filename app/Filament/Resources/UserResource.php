@@ -23,9 +23,9 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     // Sidebar / menu
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationLabel = 'Users';
-    protected static ?string $navigationGroup = 'Administration';
+    protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 1;
 
     // ✅ Only Admin can see/manage users
