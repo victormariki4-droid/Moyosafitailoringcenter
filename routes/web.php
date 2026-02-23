@@ -36,3 +36,30 @@ Route::middleware(['auth'])->group(function () {
         return response()->download(database_path('database.sqlite'), 'moyosafi_full_backup_' . date('Y_m_d_H_i') . '.sqlite');
     })->name('system.backup');
 });
+
+// Temporary Route to Create the View-Only User
+Route::get('/setup-viewer', function() {
+    // 1. Create permissions
+    $permissions = ['students.view', 'enrollments.view', 'courses.view'];
+    foreach ($permissions as $p) {
+        \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $p]);
+    }
+
+    // 2. Ensure the read_only_admin role exists with the right permissions
+    $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'read_only_admin']);
+    $role->syncPermissions($permissions);
+
+    // 3. Create the user
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => 'viewer@school.com'],
+        [
+            'name' => 'System Viewer',
+            'password' => \Illuminate\Support\Facades\Hash::make('viewer123'),
+        ]
+    );
+
+    // 4. Assign role
+    $user->assignRole('read_only_admin');
+
+    return "View-only user successfully created! <br><br>Email: <b>viewer@school.com</b><br>Password: <b>viewer123</b><br><br><a href='/admin/login'>Click here to login</a>";
+});
