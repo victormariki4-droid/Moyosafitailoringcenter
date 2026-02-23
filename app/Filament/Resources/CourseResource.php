@@ -136,4 +136,30 @@ class CourseResource extends Resource
             'edit'   => Pages\EditCourse::route('/{record}/edit'),
         ];
     }
+
+    // ✅ Permissions (Spatie)
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('courses.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('courses.create') ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->can('courses.update') ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->can('courses.delete') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()?->can('courses.delete') ?? false;
+    }
 }

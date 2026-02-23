@@ -91,7 +91,8 @@ class EnrollmentStatusResource extends Resource
             ->actions([
                 EditAction::make()
                     ->label('Update Status')
-                    ->modalHeading('Update Enrollment Status'),
+                    ->modalHeading('Update Enrollment Status')
+                    ->visible(fn() => auth()->user()?->can('enrollments.update') ?? false),
             ])
             ->bulkActions([]);
     }
@@ -100,10 +101,27 @@ class EnrollmentStatusResource extends Resource
     {
         return [
             'index' => Pages\ListEnrollmentStatuses::route('/'),
-            // We don't need create/edit pages if we use modal actions, but let's keep standard structure just in case.
-            // Actually, for "Status" updates, a simple modal on the index page is often best.
-            // Let's rely on the EditAction in the table above which (by default) opens a modal or redirects.
-            // If we want a separate page, we can register it. For now, let's stick to Index only to keep it simple as requested "Dropdown -> Page".
         ];
+    }
+
+    // ✅ Permissions (Spatie)
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('enrollments.view') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return false; // Users shouldn't create "Enrollment Statuses", they only update them
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->can('enrollments.update') ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return false; // Enrollment Statuses can't be deleted here, only from EnrollmentResource
     }
 }
