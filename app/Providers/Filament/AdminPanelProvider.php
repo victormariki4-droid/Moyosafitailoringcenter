@@ -85,7 +85,7 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn () => route('system.backup'), shouldOpenInNewTab: true)
                     ->group('Settings')
                     ->sort(99)
-                    ->visible(fn() => auth()->user()?->hasRole('admin') ?? false),
+                    ->visible(fn() => auth()->user()?->hasRole(['admin', 'read_only_admin']) ?? false),
 
                 \Filament\Navigation\NavigationItem::make('Log Out')
                     ->url(fn (): string => route('system.logout'))

@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     // System Backup & Export (Downloads SQLite Database)
     Route::get('/system/backup', function() {
-        if (!auth()->user()?->hasRole('admin')) { abort(403); }
+        if (!auth()->user()?->hasRole(['admin', 'read_only_admin'])) { abort(403); }
         return response()->download(database_path('database.sqlite'), 'moyosafi_full_backup_' . date('Y_m_d_H_i') . '.sqlite');
     })->name('system.backup');
 });
