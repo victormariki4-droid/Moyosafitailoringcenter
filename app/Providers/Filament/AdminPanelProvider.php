@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 'danger' => Color::Rose,
             ])
             ->font('Inter')
-            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make()
                     ->label('Student Management')
