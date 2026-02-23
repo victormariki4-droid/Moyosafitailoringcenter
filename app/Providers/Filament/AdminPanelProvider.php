@@ -29,9 +29,17 @@ class AdminPanelProvider extends PanelProvider
             ->login()
 
             // ✅ Branding
-            ->brandName('School Dashboard')
-            ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('4rem')
+            ->brandName('Moyo Safi Tailoring Center')
+            ->brandLogo(fn () => new \Illuminate\Support\HtmlString('
+                <div style="display: flex; align-items: center; gap: 12px; padding: 4px 0;">
+                    <img src="' . asset('images/logo.png') . '" alt="Logo" style="height: 3rem; width: auto; object-fit: contain;" />
+                    <span style="font-weight: 700; font-size: 1.1rem; line-height: 1.2; text-align: left;">
+                        Moyo Safi<br>
+                        <span style="font-size: 0.8rem; font-weight: 500; opacity: 0.8;">Tailoring Center</span>
+                    </span>
+                </div>
+            '))
+            ->brandLogoHeight('auto')
 
             // ✅ Put "Welcome Victor" in the TOP BAR (near logo)
             ->userMenuItems([
