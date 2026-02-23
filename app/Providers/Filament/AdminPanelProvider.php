@@ -84,14 +84,14 @@ class AdminPanelProvider extends PanelProvider
                 \Filament\Navigation\NavigationItem::make('Backup & Export Data')
                     ->url(fn () => route('system.backup'), shouldOpenInNewTab: true)
                     ->icon('heroicon-o-cloud-arrow-down')
-                    ->group('System Controls')
+                    ->group('Settings')
                     ->sort(99)
                     ->visible(fn() => auth()->user()?->hasRole('admin') ?? false),
 
                 \Filament\Navigation\NavigationItem::make('Log Out')
                     ->url(fn (): string => route('system.logout'))
                     ->icon('heroicon-o-arrow-left-on-rectangle')
-                    ->group('System Controls')
+                    ->group('Settings')
                     ->sort(100),
             ])
 
