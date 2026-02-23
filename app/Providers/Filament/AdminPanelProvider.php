@@ -31,11 +31,11 @@ class AdminPanelProvider extends PanelProvider
             // ✅ Branding
             ->brandName('Moyo Safi Tailoring Center')
             ->brandLogo(fn () => new \Illuminate\Support\HtmlString('
-                <div style="display: flex; align-items: center; gap: 12px; padding: 4px 0;">
-                    <img src="' . asset('images/logo.png') . '" alt="Logo" style="height: 3rem; width: auto; object-fit: contain;" />
-                    <span style="font-weight: 700; font-size: 1.1rem; line-height: 1.2; text-align: left;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 4px 0; width: 100%;">
+                    <img src="' . asset('images/logo.png') . '" alt="Logo" style="height: ' . (str_contains(request()->path(), 'login') ? '6rem' : '3rem') . '; width: auto; object-fit: contain;" />
+                    <span style="font-weight: 700; font-size: ' . (str_contains(request()->path(), 'login') ? '2rem' : '1.1rem') . '; line-height: 1.2; text-align: left;">
                         Moyo Safi<br>
-                        <span style="font-size: 0.8rem; font-weight: 500; opacity: 0.8;">Tailoring Center</span>
+                        <span style="font-size: ' . (str_contains(request()->path(), 'login') ? '1.2rem' : '0.8rem') . '; font-weight: 500; opacity: 0.8;">Tailoring Center</span>
                     </span>
                 </div>
             '))
