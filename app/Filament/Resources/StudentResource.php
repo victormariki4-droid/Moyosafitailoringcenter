@@ -233,6 +233,7 @@ class StudentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->visible(fn() => auth()->user()?->can('students.update_school_info') ?? false),
 

@@ -28,8 +28,28 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 1;
 
-    // ✅ Only Admin can see/manage users
+    // ✅ Only Admin & Read Only Admin can see users
     public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasRole(['admin', 'read_only_admin']) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->hasRole('admin') ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasRole('admin') ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasRole('admin') ?? false;
+    }
+
+    public static function canDeleteAny(): bool
     {
         return auth()->user()?->hasRole('admin') ?? false;
     }
@@ -86,6 +106,7 @@ class UserResource extends Resource
                 TextColumn::make('updated_at')->dateTime()->since()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
