@@ -80,6 +80,21 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
 
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Backup & Export Data')
+                    ->url(fn () => route('system.backup'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-cloud-arrow-down')
+                    ->group('System Controls')
+                    ->sort(99)
+                    ->visible(fn() => auth()->user()?->hasRole('admin') ?? false),
+
+                \Filament\Navigation\NavigationItem::make('Log Out')
+                    ->url(fn (): string => route('system.logout'))
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->group('System Controls')
+                    ->sort(100),
+            ])
+
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
 
             // ✅ REMOVE AccountWidget so it doesn't show as a big card on Dashboard

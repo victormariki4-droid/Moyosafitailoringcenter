@@ -20,3 +20,19 @@ Route::middleware(['auth'])->prefix('student')->group(function () {
     // Route::get('/progress/{report}/pdf', [ProgressReportController::class, 'pdf'])
     //     ->name('student.progress.pdf');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // Quick Sidebar Logout
+    Route::get('/system/logout', function() {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/admin/login');
+    })->name('system.logout');
+
+    // System Backup & Export (Downloads SQLite Database)
+    Route::get('/system/backup', function() {
+        if (!auth()->user()?->hasRole('admin')) { abort(403); }
+        return response()->download(database_path('database.sqlite'), 'moyosafi_full_backup_' . date('Y_m_d_H_i') . '.sqlite');
+    })->name('system.backup');
+});
