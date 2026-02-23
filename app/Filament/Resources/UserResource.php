@@ -23,10 +23,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     // Sidebar / menu
-    public static function getNavigationIcon(): ?string
-    {
-        return null;
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationLabel = 'Users';
     protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 1;
