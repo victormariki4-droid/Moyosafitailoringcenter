@@ -31,7 +31,7 @@ class AuthController extends Controller
 
             // ✅ Students → Student Portal
             if ($user->student) {
-                return redirect()->intended('/student/progress');
+                return redirect()->intended('/');
             }
 
             // fallback (should not usually happen)

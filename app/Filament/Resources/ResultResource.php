@@ -33,6 +33,7 @@ class ResultResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
     protected static ?string $navigationLabel = 'Results';
+    protected static bool $shouldRegisterNavigation = false;
 
     /**
      * ✅ Teachers see ONLY their own results (Admin sees all)
@@ -312,7 +313,7 @@ class ResultResource extends Resource
     // ✅ Spatie permissions
     public static function canViewAny(): bool
     {
-        return auth()->user()?->can('results.view') ?? false;
+        return false;
     }
 
     public static function canCreate(): bool

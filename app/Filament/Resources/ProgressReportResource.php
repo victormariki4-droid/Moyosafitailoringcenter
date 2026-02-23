@@ -13,9 +13,13 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
 
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+
+use Filament\Forms\Set;
+use App\Models\Enrollment;
 
 class ProgressReportResource extends Resource
 {
@@ -23,6 +27,7 @@ class ProgressReportResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Progress Reports';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
@@ -41,7 +46,28 @@ class ProgressReportResource extends Resource
                                 ->toArray()
                         )
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->live()
+                        ->afterStateUpdated(fn (Set $set) => $set('enrollment_id', null)),
+
+                    Select::make('enrollment_id')
+                        ->label('Specific Course / Enrollment')
+                        ->options(function (Get $get) {
+                            $studentId = $get('student_id');
+                            if (!$studentId) return [];
+
+                            return Enrollment::query()
+                                ->where('student_id', $studentId)
+                                ->with('course')
+                                ->get()
+                                ->mapWithKeys(fn ($e) => [
+                                    $e->id => "{$e->course?->name} (Started: {$e->start_date?->format('Y-m-d')})"
+                                ])
+                                ->toArray();
+                        })
+                        ->searchable()
+                        ->required()
+                        ->helperText('Link this progress report to a specific course enrollment.'),
 
                     DatePicker::make('report_date')
                         ->label('Report Date')
@@ -58,9 +84,20 @@ class ProgressReportResource extends Resource
                         ])
                         ->required(),
 
-                    Textarea::make('notes')
-                        ->label('Teacher Notes')
+                    TextInput::make('title')
+                        ->label('Report Title')
+                        ->placeholder('e.g. Monthly Performance Review - Jan')
+                        ->required(),
+
+                    Textarea::make('progress_notes')
+                        ->label('Progress / Teacher Notes')
+                        ->placeholder('Describe the student progress in detail...')
                         ->required()
+                        ->columnSpanFull(),
+
+                    Textarea::make('next_steps')
+                        ->label('Next Steps / Goals')
+                        ->placeholder('What should the student focus on next?')
                         ->columnSpanFull(),
                 ])
                 ->columns(2),
@@ -75,6 +112,7 @@ class ProgressReportResource extends Resource
                 ->label('Student')
                 ->formatStateUsing(fn ($state, $record) => $record->student?->first_name.' '.$record->student?->last_name)
                 ->searchable(),
+            TextColumn::make('enrollment.course.name')->label('Course')->sortable(),
             TextColumn::make('progress_level')->badge()->sortable(),
             TextColumn::make('report_date')->date()->sortable(),
             TextColumn::make('teacher.name')->label('Teacher')->toggleable(isToggledHiddenByDefault: true),
@@ -98,7 +136,7 @@ class ProgressReportResource extends Resource
     // Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->can('progress_reports.view') ?? false;
+        return false;
     }
 
     public static function canCreate(): bool

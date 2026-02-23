@@ -14,10 +14,9 @@ Route::get('/students/{record}/print', [StudentPrintController::class, 'print'])
 
 
 Route::middleware(['auth'])->prefix('student')->group(function () {
-    Route::get('/progress', [ProgressReportController::class, 'index'])
-        ->name('student.progress');
+    // Route::get('/progress', [ProgressReportController::class, 'index'])
+    //     ->name('student.progress');
 
-    Route::get('/progress/{report}/pdf', [ProgressReportController::class, 'pdf'])
-        ->name('student.progress.pdf');
-
+    // Route::get('/progress/{report}/pdf', [ProgressReportController::class, 'pdf'])
+    //     ->name('student.progress.pdf');
 });
