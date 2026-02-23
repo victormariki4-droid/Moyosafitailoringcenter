@@ -140,7 +140,8 @@ class CourseResource extends Resource
     // ✅ Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->can('courses.view') ?? false;
+        return auth()->user()?->hasRole(['admin', 'teacher', 'read_only_admin']) 
+            || (auth()->user()?->can('courses.view') ?? false);
     }
 
     public static function canCreate(): bool
