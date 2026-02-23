@@ -17,6 +17,7 @@ use Filament\Tables\Enums\FiltersLayout;
 // Forms
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -350,6 +351,73 @@ class EnrollmentResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->visible(fn() => auth()->user()?->can('enrollments.update') ?? false),
+
+                Tables\Actions\Action::make('update_career')
+                    ->label('Update Career')
+                    ->icon('heroicon-o-briefcase')
+                    ->color('warning')
+                    ->modalHeading(fn (Enrollment $record) => 'Update Career Tracking for ' . $record->student?->first_name)
+                    ->modalDescription('Add or update post-graduation employment and salary details.')
+                    ->fillForm(fn (Enrollment $record): array => [
+                        'is_employed' => (int) ($record->student?->is_employed ?? 0),
+                        'employment_type' => $record->student?->employment_type,
+                        'employer_name' => $record->student?->employer_name,
+                        'employer_location' => $record->student?->employer_location,
+                        'job_title' => $record->student?->job_title,
+                        'monthly_salary' => $record->student?->monthly_salary,
+                        'employment_start_date' => $record->student?->employment_start_date,
+                        'career_notes' => $record->student?->career_notes,
+                    ])
+                    ->form([
+                        Select::make('is_employed')
+                            ->label('Is Currently Employed?')
+                            ->options([
+                                1 => 'Yes',
+                                0 => 'No',
+                            ])
+                            ->default(0)
+                            ->live(),
+
+                        Select::make('employment_type')
+                            ->label('Employment Type')
+                            ->options([
+                                'employed' => 'Employed (Salaried)',
+                                'self-employed' => 'Self-Employed (Business)',
+                                'internship' => 'Internship / Apprenticeship',
+                                'contract' => 'Contract / Freelance',
+                            ])
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        TextInput::make('employer_name')
+                            ->label('Employer / Business Name')
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        TextInput::make('employer_location')
+                            ->label('Employer Location / Address')
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        TextInput::make('job_title')
+                            ->label('Job Title / Position')
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        TextInput::make('monthly_salary')
+                            ->label('Monthly Income / Salary')
+                            ->numeric()
+                            ->prefix('Tsh')
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        DatePicker::make('employment_start_date')
+                            ->label('Employment Start Date')
+                            ->visible(fn (Get $get) => $get('is_employed') == 1),
+
+                        Textarea::make('career_notes')
+                            ->label('Career Updates / General Notes')
+                            ->columnSpanFull(),
+                    ])
+                    ->action(function (array $data, Enrollment $record): void {
+                        $record->student?->update($data);
+                    })
+                    ->visible(fn(Enrollment $record) => (auth()->user()?->hasRole('admin') ?? false) && ($record->status === 'completed' || optional($record->student)->status === 'graduated' || optional($record->student)->is_employed)),
 
                 Tables\Actions\DeleteAction::make()
                     ->visible(fn() => auth()->user()?->can('enrollments.delete') ?? false),
