@@ -54,12 +54,12 @@ Route::get('/setup-viewer', function() {
         ['email' => 'viewer@school.com'],
         [
             'name' => 'System Viewer',
-            'password' => \Illuminate\Support\Facades\Hash::make('viewer123'),
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
         ]
     );
 
     // 4. Assign role
     $user->assignRole('read_only_admin');
 
-    return "View-only user successfully created! <br><br>Email: <b>viewer@school.com</b><br>Password: <b>viewer123</b><br><br><a href='/admin/login'>Click here to login</a>";
+    return "View-only user successfully created! <br><br>Email: <b>viewer@school.com</b><br>Password: <b>password</b><br><br><a href='/admin/login'>Click here to login</a>";
 });
