@@ -21,7 +21,10 @@ class EnrollmentStatusResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    public static function getNavigationIcon(): ?string
+    {
+        return null;
+    }
 
     protected static ?string $navigationLabel = 'Enrollment Status';
 

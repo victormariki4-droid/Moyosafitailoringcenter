@@ -27,7 +27,10 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    public static function getNavigationIcon(): ?string
+    {
+        return null;
+    }
     protected static ?string $navigationLabel = 'Courses';
     protected static ?string $navigationGroup = 'Academics';
     protected static ?int $navigationSort = 1;
