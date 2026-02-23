@@ -27,9 +27,8 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $cluster = \App\Filament\Clusters\Academics::class;
     protected static ?string $navigationLabel = 'Courses';
-    protected static ?string $navigationGroup = 'Academics';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

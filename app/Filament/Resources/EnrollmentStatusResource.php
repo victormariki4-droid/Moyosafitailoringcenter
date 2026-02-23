@@ -21,11 +21,8 @@ class EnrollmentStatusResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-
+    protected static ?string $cluster = \App\Filament\Clusters\EnrollmentManagement::class;
     protected static ?string $navigationLabel = 'Enrollment Status';
-
-    protected static ?string $navigationGroup = 'Enrollment Management';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form

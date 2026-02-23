@@ -23,9 +23,8 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     // Sidebar / menu
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static ?string $cluster = \App\Filament\Clusters\Settings::class;
     protected static ?string $navigationLabel = 'Users';
-    protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 1;
 
     // ✅ Only Admin & Read Only Admin can see users

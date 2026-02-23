@@ -31,11 +31,8 @@ class EnrollmentResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-
+    protected static ?string $cluster = \App\Filament\Clusters\EnrollmentManagement::class;
     protected static ?string $navigationLabel = 'Enrollments';
-
-    protected static ?string $navigationGroup = 'Enrollment Management';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
