@@ -110,7 +110,8 @@ class EnrollmentStatusResource extends Resource
     // ✅ Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->can('enrollments.view') ?? false;
+        return auth()->user()?->hasRole(['admin', 'teacher', 'read_only_admin']) 
+            || (auth()->user()?->can('enrollments.view') ?? false);
     }
 
     public static function canCreate(): bool
