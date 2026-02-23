@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasRoles;
 
@@ -46,8 +48,12 @@ class User extends Authenticatable
     }
 
     public function student()
-{
-    return $this->hasOne(\App\Models\Student::class);
-}
+    {
+        return $this->hasOne(\App\Models\Student::class);
+    }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // Allowing all users for now to debug
+    }
 }

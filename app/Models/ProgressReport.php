@@ -11,8 +11,10 @@ class ProgressReport extends Model
 
     protected $fillable = [
         'student_id',
+        'enrollment_id',
         'teacher_id',
         'report_date',
+        'progress_level',
         'title',
         'progress_notes',
         'next_steps',
@@ -25,6 +27,11 @@ class ProgressReport extends Model
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function enrollment()
+    {
+        return $this->belongsTo(Enrollment::class);
     }
 
     public function teacher()
