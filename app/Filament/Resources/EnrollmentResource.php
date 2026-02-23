@@ -123,32 +123,119 @@ class EnrollmentResource extends Resource
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make('Enrollment Details')
+                \Filament\Infolists\Components\Section::make('Student Profile')
+                    ->description('Personal details and background')
+                    ->icon('heroicon-o-user')
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('student.form_number')
-                            ->label('Form No.'),
+                            ->label('Form No.')
+                            ->badge()
+                            ->color('gray'),
 
                         \Filament\Infolists\Components\TextEntry::make('student.first_name')
-                            ->label('Student')
-                            ->formatStateUsing(fn($record) => $record->student?->first_name . ' ' . $record->student?->last_name),
+                            ->label('Full Name')
+                            ->formatStateUsing(fn($record) => trim($record->student?->first_name . ' ' . $record->student?->last_name))
+                            ->weight('bold'),
 
+                        \Filament\Infolists\Components\TextEntry::make('student.gender')
+                            ->label('Gender')
+                            ->formatStateUsing(fn($state) => ucfirst($state) ?: 'Not specified'),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.date_of_birth')
+                            ->label('Age')
+                            ->formatStateUsing(fn($state) => $state ? \Carbon\Carbon::parse($state)->age . ' years' : 'unknown'),
+                    ])
+                    ->columns(4),
+
+                \Filament\Infolists\Components\Section::make('Course & Academic Details')
+                    ->description('Enrollment status and scholastic performance')
+                    ->icon('heroicon-o-academic-cap')
+                    ->schema([
                         \Filament\Infolists\Components\TextEntry::make('course.title')
-                            ->label('Course'),
-
-                        \Filament\Infolists\Components\TextEntry::make('start_date')
-                            ->date(),
-
-                        \Filament\Infolists\Components\TextEntry::make('end_date')
-                            ->date(),
+                            ->label('Course')
+                            ->badge()
+                            ->color('info'),
 
                         \Filament\Infolists\Components\TextEntry::make('status')
-                            ->badge(),
+                            ->label('Enrollment Status')
+                            ->badge()
+                            ->color(fn(string $state): string => match ($state) {
+                                'active' => 'success',
+                                'completed' => 'primary',
+                                'dropped' => 'danger',
+                                default => 'gray',
+                            }),
+
+                        \Filament\Infolists\Components\TextEntry::make('performance')
+                            ->label('Average Score')
+                            ->badge()
+                            ->color('warning')
+                            ->formatStateUsing(function ($record) {
+                                $avg = \App\Models\Result::where('student_id', $record->student_id)
+                                    ->where('course_id', $record->course_id)
+                                    ->avg('percentage');
+                                
+                                return $avg ? number_format((float) $avg, 1) . '%' : 'No results yet';
+                            }),
+
+                        \Filament\Infolists\Components\TextEntry::make('start_date')
+                            ->label('Duration')
+                            ->formatStateUsing(fn($record) => \Carbon\Carbon::parse($record->start_date)->format('M d, Y') . ' — ' . \Carbon\Carbon::parse($record->end_date)->format('M d, Y')),
 
                         \Filament\Infolists\Components\TextEntry::make('remarks')
                             ->label('Teachers Comment')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->placeholder('No teacher remarks provided.')
+                            ->markdown(),
                     ])
-                    ->columns(2)
+                    ->columns(4),
+
+                \Filament\Infolists\Components\Section::make('Alumni & Career Tracking')
+                    ->description('Post-graduation employment and salary details')
+                    ->icon('heroicon-o-briefcase')
+                    ->visible(fn($record) => $record->status === 'completed' || optional($record->student)->status === 'graduated' || optional($record->student)->is_employed)
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('student.is_employed')
+                            ->label('Employment Status')
+                            ->formatStateUsing(fn($state) => $state ? 'Employed' : 'Not Employed / Searching')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'gray'),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.employment_type')
+                            ->label('Type')
+                            ->formatStateUsing(fn($state) => str_replace('-', ' ', ucfirst($state)))
+                            ->placeholder('—')
+                            ->visible(fn($record) => $record->student?->is_employed),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.employer_name')
+                            ->label('Workspace / Employer')
+                            ->placeholder('—')
+                            ->visible(fn($record) => $record->student?->is_employed),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.job_title')
+                            ->label('Job Title')
+                            ->placeholder('—')
+                            ->visible(fn($record) => $record->student?->is_employed),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.employer_location')
+                            ->label('Location (Where from/based)')
+                            ->placeholder('—')
+                            ->visible(fn($record) => $record->student?->is_employed),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.monthly_salary')
+                            ->label('Monthly Salary')
+                            ->formatStateUsing(fn($state) => 'Tsh ' . number_format($state, 2))
+                            ->weight('bold')
+                            ->color('success')
+                            ->visible(fn($record) => $record->student?->is_employed && $record->student->monthly_salary),
+
+                        \Filament\Infolists\Components\TextEntry::make('student.career_notes')
+                            ->label('Career Notes')
+                            ->columnSpanFull()
+                            ->placeholder('—')
+                            ->visible(fn ($record) => filled($record->student?->career_notes)),
+                    ])
+                    ->columns(3),
             ]);
     }
 
