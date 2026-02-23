@@ -61,8 +61,8 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Student Management')
-                    ->icon('heroicon-o-users'),
+                    ->label('Enrollment Management')
+                    ->icon('heroicon-o-academic-cap'),
                     
                 \Filament\Navigation\NavigationGroup::make()
                     ->label('Academics')

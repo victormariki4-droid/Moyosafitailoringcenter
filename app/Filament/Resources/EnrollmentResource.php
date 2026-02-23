@@ -35,7 +35,7 @@ class EnrollmentResource extends Resource
 
     protected static ?string $navigationLabel = 'Enrollments';
 
-    protected static ?string $navigationGroup = 'Student Management';
+    protected static ?string $navigationGroup = 'Enrollment Management';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
