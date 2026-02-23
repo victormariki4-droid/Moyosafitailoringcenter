@@ -27,8 +27,12 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
 
-    protected static ?string $cluster = \App\Filament\Clusters\Academics::class;
+    public static function getNavigationIcon(): ?string
+    {
+        return null;
+    }
     protected static ?string $navigationLabel = 'Courses';
+    protected static ?string $navigationGroup = 'Academics';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -140,8 +144,7 @@ class CourseResource extends Resource
     // ✅ Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole(['admin', 'teacher', 'read_only_admin']) 
-            || (auth()->user()?->can('courses.view') ?? false);
+        return auth()->user()?->can('courses.view') ?? false;
     }
 
     public static function canCreate(): bool

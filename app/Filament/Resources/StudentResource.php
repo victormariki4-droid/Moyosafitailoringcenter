@@ -271,8 +271,7 @@ class StudentResource extends Resource
     // ✅ Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole(['admin', 'teacher', 'read_only_admin']) 
-            || (auth()->user()?->can('students.view') ?? false);
+        return auth()->user()?->can('students.view') ?? false;
     }
 
     public static function canCreate(): bool

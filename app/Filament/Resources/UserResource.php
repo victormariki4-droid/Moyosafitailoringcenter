@@ -23,8 +23,12 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     // Sidebar / menu
-    protected static ?string $cluster = \App\Filament\Clusters\Settings::class;
+    public static function getNavigationIcon(): ?string
+    {
+        return null;
+    }
     protected static ?string $navigationLabel = 'Users';
+    protected static ?string $navigationGroup = 'Settings';
     protected static ?int $navigationSort = 1;
 
     // ✅ Only Admin & Read Only Admin can see users

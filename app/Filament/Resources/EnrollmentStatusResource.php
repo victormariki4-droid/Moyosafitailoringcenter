@@ -21,8 +21,14 @@ class EnrollmentStatusResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
 
-    protected static ?string $cluster = \App\Filament\Clusters\EnrollmentManagement::class;
+    public static function getNavigationIcon(): ?string
+    {
+        return null;
+    }
+
     protected static ?string $navigationLabel = 'Enrollment Status';
+
+    protected static ?string $navigationGroup = 'Enrollment Management';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -104,8 +110,7 @@ class EnrollmentStatusResource extends Resource
     // ✅ Permissions (Spatie)
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole(['admin', 'teacher', 'read_only_admin']) 
-            || (auth()->user()?->can('enrollments.view') ?? false);
+        return auth()->user()?->can('enrollments.view') ?? false;
     }
 
     public static function canCreate(): bool

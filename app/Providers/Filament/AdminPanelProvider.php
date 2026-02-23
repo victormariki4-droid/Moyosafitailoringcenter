@@ -59,12 +59,38 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Inter')
             ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Enrollment Management')
+                    ->icon('heroicon-o-academic-cap'),
+                    
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Academics')
+                    ->icon('heroicon-o-book-open'),
+                    
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
+            ])
 
-            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+            ])
+
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Backup & Export Data')
+                    ->url(fn () => route('system.backup'), shouldOpenInNewTab: true)
+                    ->group('Settings')
+                    ->sort(99)
+                    ->visible(fn() => auth()->user()?->hasRole(['admin', 'read_only_admin']) ?? false),
+
+                \Filament\Navigation\NavigationItem::make('Log Out')
+                    ->url(fn (): string => route('system.logout'))
+                    ->group('Settings')
+                    ->sort(100),
             ])
 
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
