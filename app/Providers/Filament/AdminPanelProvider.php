@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             // ✅ Branding
             ->brandName('School Dashboard')
             ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('2rem')
+            ->brandLogoHeight('4rem')
 
             // ✅ Put "Welcome Victor" in the TOP BAR (near logo)
             ->userMenuItems([
